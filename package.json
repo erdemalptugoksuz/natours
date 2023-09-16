@@ -2,10 +2,9 @@
   "name": "natours",
   "version": "1.0.0",
   "description": "Learning Node.js, express.js and MongoDB.",
-  "type": "module",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server.js"
   },
   "author": "Erdem Alptuğ Öksüz",
   "license": "ISC",
