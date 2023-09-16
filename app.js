@@ -1,14 +1,27 @@
 import express from "express";
 import fs from "fs";
+import morgan from "morgan";
 
 const application = express();
+application.use(morgan("dev"));
 application.use(express.json());
+application.use((request, response, next) => {
+  console.log("Hello from the middleware 👋");
+  next();
+});
+application.use((request, response, next) => {
+  request.requestTime = new Date().toISOString();
+  next();
+});
+
 const port = 3000;
 const tours = JSON.parse(fs.readFileSync(`./dev-data/data/tours-simple.json`));
 
+// Tours
 const getAllTours = (request, response) => {
   response.status(200).json({
     status: "success",
+    requestedAt: request.requestTime,
     results: tours.length,
     data: {
       tours,
@@ -78,13 +91,51 @@ const deleteTour = (request, response) => {
   });
 };
 
-application.route("/api/v1/tours").get(getAllTours).post(createNewTour);
+// Users
+const getAllUsers = (request, response) => {
+  response.status(500).json({
+    status: "error",
+    message: "This route is not yet defined",
+  });
+};
+const createNewUser = (request, response) => {
+  response.status(500).json({
+    status: "error",
+    message: "This route is not yet defined",
+  });
+};
+const getUserById = (request, response) => {
+  response.status(500).json({
+    status: "error",
+    message: "This route is not yet defined",
+  });
+};
+const updateUser = (request, response) => {
+  response.status(500).json({
+    status: "error",
+    message: "This route is not yet defined",
+  });
+};
+const deleteUser = (request, response) => {
+  response.status(500).json({
+    status: "error",
+    message: "This route is not yet defined",
+  });
+};
 
+application.route("/api/v1/tours").get(getAllTours).post(createNewTour);
 application
   .route("/api/v1/tours/:id")
   .get(getTourById)
   .patch(updateTour)
   .delete(deleteTour);
+
+application.route("/api/v1/users").get(getAllUsers).post(createNewUser);
+application
+  .route("/api/v1/users/:id")
+  .get(getUserById)
+  .patch(updateUser)
+  .delete(deleteUser);
 
 application.listen(port, () => {
   console.log(`App is running on port ${port}...`);
