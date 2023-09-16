@@ -6,17 +6,7 @@ application.use(express.json());
 const port = 3000;
 const tours = JSON.parse(fs.readFileSync(`./dev-data/data/tours-simple.json`));
 
-// application.get("/", (response) => {
-//   response
-//     .status(200)
-//     .json({ message: "Hello from the server side!", app: "Natours" });
-// });
-
-// application.post("/", (response) => {
-//   response.send("You can post to this endpoint...");
-// });
-
-application.get("/api/v1/tours", (request, response) => {
+const getAllTours = (request, response) => {
   response.status(200).json({
     status: "success",
     results: tours.length,
@@ -24,9 +14,8 @@ application.get("/api/v1/tours", (request, response) => {
       tours,
     },
   });
-});
-
-application.get("/api/v1/tours/:id", (request, response) => {
+};
+const getTourById = (request, response) => {
   const id = request.params.id * 1;
   const tour = tours.find((el) => el.id === id);
 
@@ -43,9 +32,8 @@ application.get("/api/v1/tours/:id", (request, response) => {
       tour,
     },
   });
-});
-
-application.post("/api/v1/tours", (request, response) => {
+};
+const createNewTour = (request, response) => {
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, request.body);
   tours.push(newTour);
@@ -62,9 +50,8 @@ application.post("/api/v1/tours", (request, response) => {
       });
     }
   );
-});
-
-application.patch("/api/v1/tours/:id", (request, response) => {
+};
+const updateTour = (request, response) => {
   if (request.params.id * 1 > tours.length) {
     return response.status(404).json({
       status: "fail",
@@ -77,9 +64,8 @@ application.patch("/api/v1/tours/:id", (request, response) => {
       tour: "<Updated tour here...>",
     },
   });
-});
-
-application.delete("/api/v1/tours/:id", (request, response) => {
+};
+const deleteTour = (request, response) => {
   if (request.params.id * 1 > tours.length) {
     return response.status(404).json({
       status: "fail",
@@ -90,7 +76,15 @@ application.delete("/api/v1/tours/:id", (request, response) => {
     status: "success",
     data: null,
   });
-});
+};
+
+application.route("/api/v1/tours").get(getAllTours).post(createNewTour);
+
+application
+  .route("/api/v1/tours/:id")
+  .get(getTourById)
+  .patch(updateTour)
+  .delete(deleteTour);
 
 application.listen(port, () => {
   console.log(`App is running on port ${port}...`);
