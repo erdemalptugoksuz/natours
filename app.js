@@ -123,19 +123,17 @@ const deleteUser = (request, response) => {
   });
 };
 
-application.route("/api/v1/tours").get(getAllTours).post(createNewTour);
-application
-  .route("/api/v1/tours/:id")
-  .get(getTourById)
-  .patch(updateTour)
-  .delete(deleteTour);
+const tourRouter = express.Router();
+const userRouter = express.Router();
 
-application.route("/api/v1/users").get(getAllUsers).post(createNewUser);
-application
-  .route("/api/v1/users/:id")
-  .get(getUserById)
-  .patch(updateUser)
-  .delete(deleteUser);
+tourRouter.route("/").get(getAllTours).post(createNewTour);
+tourRouter.route("/:id").get(getTourById).patch(updateTour).delete(deleteTour);
+
+userRouter.route("/").get(getAllUsers).post(createNewUser);
+userRouter.route("/:id").get(getUserById).patch(updateUser).delete(deleteUser);
+
+application.use("/api/v1/tours", tourRouter);
+application.use("/api/v1/users", userRouter);
 
 application.listen(port, () => {
   console.log(`App is running on port ${port}...`);
